@@ -3,6 +3,12 @@ const express = require('express');
 const path = require('path');
 const http = require('http');
 const bodyParser = require('body-parser');
+//Database
+const poolConnections = require('./server/db/connection.js');
+global.dbs = poolConnections.connectDatabases();
+
+//Load models
+
 
 // Get our API routes
 const api = require('./server/routes/api');
@@ -21,7 +27,8 @@ app.use('/api', api);
 
 // Catch all other routes and return the index file
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist/index.html'));
+  res.render("index");
+  //res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
 /**
@@ -29,6 +36,9 @@ app.get('*', (req, res) => {
  */
 const port = process.env.PORT || '3000';
 app.set('port', port);
+app.set('view engine', 'jade');
+app.set('views', path.join(__dirname, '/server/views'));
+
 
 /**
  * Create HTTP server.
